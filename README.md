@@ -76,10 +76,19 @@ go run main.go
 
 ### Use Docker
 
+#### Download Image and Run locally
+
+- Go to link https://hub.docker.com/r/ckshitij/url-shortener/tags OR Use below command
+
+```sh
+docker pull ckshitij/url-shortener:0.0.1
+docker run -p 8088:8088 ckshitij/url-shortener:0.0.1
+```
+
 #### Build Docker
 
 ```sh
 cd url_shortner
-docker build -t url-shotner:0.0.1 .
+docker build --file Dockerfile -tag url-shotner:0.0.1 .
 docker run -p 8088:8088 url-shotner:0.0.1
 ```
