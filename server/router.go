@@ -1,6 +1,7 @@
 package server
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -32,15 +33,11 @@ func (r *MuxRouter) SetDefaultMiddlewares() {
 	r.Router.Use(middlewares...)
 }
 
-func (r *MuxRouter) AddSubRoute(path string) {
-	subRouter := chi.NewRouter()
-	r.Router.Mount(path, subRouter)
-}
-
 func (r *MuxRouter) RegisterResourceHandlers(basePath string, resourceHandlers []handlers.ResourseHandlers) {
 	r.Router.Route(basePath, func(group chi.Router) {
 		for _, resourseHdlr := range resourceHandlers {
 			for _, handler := range resourseHdlr.ResourceHTTPHandlers() {
+				log.Printf("Registed endpoint : %s %s%s", handler.Method, basePath, handler.Path)
 				switch handler.Method {
 				case http.MethodGet:
 					group.With(handler.MiddleWares...).Get(handler.Path, handler.Handler)

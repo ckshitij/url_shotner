@@ -18,7 +18,7 @@ func LoadServiceConfig() *ServiceConfig {
 	return &ServiceConfig{
 		Server: ServerConfig{
 			Host:         getEnv("SERVICE_HOST", "localhost"),
-			Port:         getEnv("SERVICE_PORT", "8080"),
+			Port:         getEnv("SERVICE_PORT", "8088"),
 			ReadTimeout:  10,
 			WriteTimeout: 10,
 			IdleTimeout:  60,
