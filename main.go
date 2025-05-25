@@ -1,15 +1,18 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
+	"github.io/ckshitij/url-shortner/config"
 	"github.io/ckshitij/url-shortner/server"
 )
 
 func main() {
 
-	log.Println("starting server at port :8080...")
-	if err := server.NewHTTPServer().ListenAndServe(); err != nil {
-		log.Fatal("failed to start a server")
+	cfg := config.LoadServiceConfig()
+	log.Printf("starting server at %s ....", fmt.Sprintf("%s:%s", cfg.Server.Host, cfg.Server.Port))
+	if err := server.NewHTTPServer(cfg).ListenAndServe(); err != nil {
+		log.Fatal("failed to start a server with error ", err)
 	}
 }
