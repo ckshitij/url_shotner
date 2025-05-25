@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	"github.io/ckshitij/url-shortner/handlers"
 )
 
@@ -31,6 +32,17 @@ func (r *MuxRouter) SetDefaultMiddlewares() {
 		middleware.Timeout(60 * time.Second),
 	}
 	r.Router.Use(middlewares...)
+}
+
+func (r *MuxRouter) EnableCorsConfig() {
+	r.Router.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"*"}, // Use "*" to allow all origins, or restrict to ["http://localhost:3000"]
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:           300, // Maximum value not ignored by any major browsers
+	}))
 }
 
 func (r *MuxRouter) RegisterResourceHandlers(basePath string, resourceHandlers []handlers.ResourseHandlers) {

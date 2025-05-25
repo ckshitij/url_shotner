@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>URL Shortener</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 50px; }
+    input, button { padding: 10px; font-size: 1em; }
+    .result { margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <h1>URL Shortener</h1>
+
+  <input type="text" id="originalUrl" placeholder="Enter your long URL" size="50">
+  <button onclick="shortenUrl()">Shorten</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    async function shortenUrl() {
+      const url = document.getElementById("originalUrl").value;
+      const response = await fetch("http://localhost:8088/api/v1/url-shorten", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: url })
+      });
+
+      if (!response.ok) {
+        document.getElementById("result").innerHTML = "Error shortening URL";
+        return;
+      }
+
+      const data = await response.json();
+      document.getElementById("result").innerHTML = `
+        Shortened URL: <a href="${data.short_url}" target="_blank">${data.short_url}</a>
+      `;
+    }
+  </script>
+
+</body>
+</html>
