@@ -23,5 +23,5 @@ type URLShortnerResponse struct {
 }
 
 type MetricsData struct {
-	Metrics []DomainCount `json:"top_domains"`
+	Metrics []DomainCount `json:"top3_domains"`
 }

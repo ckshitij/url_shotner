@@ -16,11 +16,14 @@ type URLStore struct {
 }
 
 func NewURLShortnerStore() *URLStore {
-
 	return &URLStore{
 		shortnerMap: make(map[string]string),
 		domainCount: make(map[string]int),
-		activeInd:   0,
+		topDomains: [2][]DomainCount{
+			make([]DomainCount, 1),
+			make([]DomainCount, 1),
+		},
+		activeInd: 0,
 	}
 }
 

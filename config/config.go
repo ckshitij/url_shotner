@@ -19,7 +19,7 @@ type ServerConfig struct {
 func LoadServiceConfig() *ServiceConfig {
 	Config = &ServiceConfig{
 		Server: ServerConfig{
-			Host:         getEnv("SERVICE_HOST", "localhost"),
+			Host:         getEnv("SERVICE_HOST", "0.0.0.0"),
 			Port:         getEnv("SERVICE_PORT", "8088"),
 			ReadTimeout:  10,
 			WriteTimeout: 10,
