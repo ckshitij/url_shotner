@@ -62,3 +62,7 @@ func (s *serviceImpl) validateAndExtractDomain(rawURL string) (string, error) {
 
 	return host, nil
 }
+
+func (s *serviceImpl) Metric(ctx context.Context) *MetricsData {
+	return s.store.TopDomains(ctx)
+}

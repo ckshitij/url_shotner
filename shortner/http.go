@@ -32,6 +32,12 @@ func (h URLShortner) ResourceHTTPHandlers() []*handlers.HTTPHandler {
 			MiddleWares: nil,
 			Handler:     h.FetchURL,
 		},
+		{
+			Method:      http.MethodGet,
+			Path:        "/metrics",
+			MiddleWares: nil,
+			Handler:     h.Metric,
+		},
 	}
 }
 
@@ -72,10 +78,9 @@ func (h *URLShortner) FetchURL(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, url, http.StatusFound)
 }
 
-/*
-curl -X POST http://localhost:8080/api/v1/url-shorten \
--H "Content-Type: application/json" \
--d '{
-"url": "https://example.com/some/very/long/path",
-}'
-*/
+func (h *URLShortner) Metric(w http.ResponseWriter, r *http.Request) {
+	// Decode JSON body
+	response := h.service.Metric(r.Context())
+
+	handlers.WriteJSON(w, http.StatusOK, response)
+}

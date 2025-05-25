@@ -10,8 +10,8 @@ type URLShortData struct {
 }
 
 type DomainCount struct {
-	Domain string
-	Count  int64
+	Domain string `json:"domain"`
+	Count  int    `json:"freuency"`
 }
 
 type URLShortnerData struct {
@@ -20,4 +20,8 @@ type URLShortnerData struct {
 
 type URLShortnerResponse struct {
 	ShortURL string `json:"short_url"`
+}
+
+type MetricsData struct {
+	Metrics []DomainCount `json:"top_domains"`
 }
