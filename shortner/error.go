@@ -3,6 +3,8 @@ package shortner
 import (
 	"errors"
 	"net/http"
+
+	"github.io/ckshitij/url-shortner/handlers"
 )
 
 var (
@@ -17,7 +19,14 @@ type ErrorHTTPData struct {
 }
 
 var errorStatusMap = map[error]ErrorHTTPData{
-	ErrInvalidURL: {
-		StatusCode: http.StatusBadRequest,
-	},
+	ErrInvalidURL:  {StatusCode: http.StatusBadRequest},
+	ErrURLNotFound: {StatusCode: http.StatusNotFound},
+}
+
+func HandleError(err error, w http.ResponseWriter) {
+	statusCode := http.StatusInternalServerError
+	if val, ok := errorStatusMap[err]; ok {
+		statusCode = val.StatusCode
+	}
+	handlers.WriteError(w, statusCode, err.Error())
 }

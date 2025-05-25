@@ -26,6 +26,7 @@ func (s *serviceImpl) ProcessURL(ctx context.Context, url string) (string, error
 		return "", err
 	}
 
+	// short logic will be add here.
 	shortURL := ShortenURL(url)
 
 	data := URLShortData{
@@ -35,13 +36,13 @@ func (s *serviceImpl) ProcessURL(ctx context.Context, url string) (string, error
 		CreatedAt: time.Now(),
 	}
 
-	s.store.Insert(data)
-	shortenURL := fmt.Sprintf("http://%s:%s/%s", config.Config.Server.Host, config.Config.Server.Port, shortURL)
+	s.store.Insert(ctx, data)
+	shortenURL := fmt.Sprintf("http://%s:%s/api/v1/%s", config.Config.Server.Host, config.Config.Server.Port, shortURL)
 	return shortenURL, nil
 }
 
-func (s *serviceImpl) GetURL(shortURL string) (string, error) {
-	return s.store.GetURL(shortURL)
+func (s *serviceImpl) GetURL(ctx context.Context, shortURL string) (string, error) {
+	return s.store.GetURL(ctx, shortURL)
 }
 
 func (s *serviceImpl) validateAndExtractDomain(rawURL string) (string, error) {

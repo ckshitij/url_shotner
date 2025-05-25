@@ -4,10 +4,10 @@ import "context"
 
 type ShortnerService interface {
 	ProcessURL(ctx context.Context, url string) (string, error)
-	GetURL(shortURL string) (string, error)
+	GetURL(ctx context.Context, shortURL string) (string, error)
 }
 
 type ShortnerStore interface {
-	Insert(data URLShortData)
-	GetURL(shortURL string) (string, error)
+	Insert(ctx context.Context, data URLShortData)
+	GetURL(ctx context.Context, shortURL string) (string, error)
 }

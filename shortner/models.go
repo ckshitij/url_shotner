@@ -14,7 +14,7 @@ type DomainCount struct {
 	Count  int64
 }
 
-type URLShortnerRequest struct {
+type URLShortnerData struct {
 	URL string `json:"url"`
 }
 

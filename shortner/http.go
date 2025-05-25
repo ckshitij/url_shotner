@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.io/ckshitij/url-shortner/handlers"
 )
 
@@ -25,11 +26,17 @@ func (h URLShortner) ResourceHTTPHandlers() []*handlers.HTTPHandler {
 			MiddleWares: nil,
 			Handler:     h.ShortURL,
 		},
+		{
+			Method:      http.MethodGet,
+			Path:        "/{shorten_str}",
+			MiddleWares: nil,
+			Handler:     h.FetchURL,
+		},
 	}
 }
 
 func (h *URLShortner) ShortURL(w http.ResponseWriter, r *http.Request) {
-	var request URLShortnerRequest
+	var request URLShortnerData
 
 	// Decode JSON body
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
@@ -41,17 +48,28 @@ func (h *URLShortner) ShortURL(w http.ResponseWriter, r *http.Request) {
 
 	data, err := h.service.ProcessURL(r.Context(), request.URL)
 	if err != nil {
-		statusCode := http.StatusInternalServerError
-		if val, ok := errorStatusMap[err]; ok {
-			statusCode = val.StatusCode
-		}
-		handlers.WriteError(w, statusCode, err.Error())
+		HandleError(err, w)
+		return
 	}
 
 	response.ShortURL = data
 
 	// Respond with success
 	handlers.WriteJSON(w, http.StatusCreated, response)
+}
+
+func (h *URLShortner) FetchURL(w http.ResponseWriter, r *http.Request) {
+
+	// Decode JSON body
+	shortenURL := chi.URLParam(r, "shorten_str")
+
+	url, err := h.service.GetURL(r.Context(), shortenURL)
+	if err != nil {
+		HandleError(err, w)
+		return
+	}
+
+	http.Redirect(w, r, url, http.StatusFound)
 }
 
 /*

@@ -14,7 +14,7 @@ func NewHTTPServer(cfg *config.ServiceConfig) *http.Server {
 	router := NewMuxRouter()
 	router.SetDefaultMiddlewares()
 
-	urlShortner := shortner.URLShortner{}
+	urlShortner := shortner.NewURLShortnerModule()
 
 	resourceHandlers := []handlers.ResourseHandlers{
 		urlShortner,
