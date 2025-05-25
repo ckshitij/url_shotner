@@ -2,6 +2,8 @@ package config
 
 import "os"
 
+var Config *ServiceConfig
+
 type ServiceConfig struct {
 	Server ServerConfig
 }
@@ -15,7 +17,7 @@ type ServerConfig struct {
 }
 
 func LoadServiceConfig() *ServiceConfig {
-	return &ServiceConfig{
+	Config = &ServiceConfig{
 		Server: ServerConfig{
 			Host:         getEnv("SERVICE_HOST", "localhost"),
 			Port:         getEnv("SERVICE_PORT", "8088"),
@@ -24,6 +26,7 @@ func LoadServiceConfig() *ServiceConfig {
 			IdleTimeout:  60,
 		},
 	}
+	return Config
 }
 
 func getEnv(key, defaultValue string) string {

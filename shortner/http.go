@@ -2,13 +2,19 @@ package shortner
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.io/ckshitij/url-shortner/handlers"
 )
 
 type URLShortner struct {
+	service ShortnerService
+}
+
+func NewURLShortner(service ShortnerService) URLShortner {
+	return URLShortner{
+		service: service,
+	}
 }
 
 func (h URLShortner) ResourceHTTPHandlers() []*handlers.HTTPHandler {
@@ -25,7 +31,6 @@ func (h URLShortner) ResourceHTTPHandlers() []*handlers.HTTPHandler {
 func (h *URLShortner) ShortURL(w http.ResponseWriter, r *http.Request) {
 	var request URLShortnerRequest
 
-	fmt.Println(r)
 	// Decode JSON body
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		handlers.WriteError(w, http.StatusBadRequest, "Invalid JSON payload")
@@ -33,7 +38,17 @@ func (h *URLShortner) ShortURL(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var response URLShortnerResponse
-	response.ShortURL = request.URL
+
+	data, err := h.service.ProcessURL(r.Context(), request.URL)
+	if err != nil {
+		statusCode := http.StatusInternalServerError
+		if val, ok := errorStatusMap[err]; ok {
+			statusCode = val.StatusCode
+		}
+		handlers.WriteError(w, statusCode, err.Error())
+	}
+
+	response.ShortURL = data
 
 	// Respond with success
 	handlers.WriteJSON(w, http.StatusCreated, response)
