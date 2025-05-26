@@ -1,0 +1,46 @@
+name: Pre-Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Go environment
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.24'  # Set this to your Go version
+
+      # Step 4: Fetch Go dependencies (including private modules)
+      - name: Get dependencies
+        run: |
+          go mod tidy
+          go mod download
+
+      # Step 5: Run Go linting (Added step)
+      - name: Run Golang Linter
+        uses: golangci/golangci-lint-action@v3
+        continue-on-error: true  # Linting errors will not fail the pipeline
+        with:
+          version: latest
+          args: --timeout=5m
+
+      # Step 6: Run Build
+      - name: Run Build
+        run: go build ./...
+
+      # Step 7: Run tests and calculate coverage
+      - name: Run test coverage
+        run: go test -v -coverprofile=coverage.out ./...
