@@ -81,14 +81,16 @@ go run main.go
 - Go to link https://hub.docker.com/r/ckshitij/url-shortener/tags OR Use below command
 
 ```sh
-docker pull ckshitij/url-shortener:0.0.1
-docker run -p 8088:8088 ckshitij/url-shortener:0.0.1
+docker pull ckshitij/url-shortener:0.0.2
+docker run -p 8088:8088 ckshitij/url-shortener:0.0.2
 ```
+
+- Open browser and type http://localhost:8088 , now you can use the shortner.
 
 #### Build Docker
 
 ```sh
 cd url_shortner
-docker build --file Dockerfile -tag url-shotner:0.0.1 .
-docker run -p 8088:8088 url-shotner:0.0.1
+docker build --file Dockerfile -tag url-shotner:0.0.2 .
+docker run -p 8088:8088 url-shotner:0.0.2
 ```
