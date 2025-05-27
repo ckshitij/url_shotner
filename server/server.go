@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"text/template"
 	"time"
 
 	"github.io/ckshitij/url-shortner/config"
@@ -16,6 +17,19 @@ func NewHTTPServer(cfg *config.ServiceConfig) *http.Server {
 
 	router.EnableCorsConfig()
 	urlShortner := shortner.NewURLShortnerModule()
+
+	tmpl := template.Must(template.ParseGlob("index.html"))
+
+	router.Router.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		data := map[string]string{
+			"Name": "World",
+		}
+
+		err := tmpl.ExecuteTemplate(w, "index.html", data)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	})
 
 	resourceHandlers := []handlers.ResourseHandlers{
 		urlShortner,
