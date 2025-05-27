@@ -81,8 +81,8 @@ go run main.go
 - Go to link https://hub.docker.com/r/ckshitij/url-shortener/tags OR Use below command
 
 ```sh
-docker pull ckshitij/url-shortener:0.0.2
-docker run -p 8088:8088 ckshitij/url-shortener:0.0.2
+docker pull ckshitij/url-shortener
+docker run -p 8088:8088 ckshitij/url-shortener
 ```
 
 - Open browser and type http://localhost:8088 , now you can use the shortner.
