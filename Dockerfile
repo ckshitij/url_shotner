@@ -25,6 +25,7 @@ FROM alpine:latest
 WORKDIR /root/
 
 # Copy the binary
+COPY --from=builder /app/index.html .
 COPY --from=builder /app/url-shortener .
 
 # (Optional) Override default port if you want

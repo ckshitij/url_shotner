@@ -1,14 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>URL Shortener</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 50px; }
-    input, button { padding: 10px; font-size: 1em; }
-    .result { margin-top: 20px; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 50px;
+    }
+
+    input,
+    button {
+      padding: 10px;
+      font-size: 1em;
+    }
+
+    .result {
+      margin-top: 20px;
+    }
   </style>
 </head>
+
 <body>
 
   <h1>URL Shortener</h1>
@@ -16,7 +29,14 @@
   <input type="text" id="originalUrl" placeholder="Enter your long URL" size="50">
   <button onclick="shortenUrl()">Shorten</button>
 
+  <button onclick="GetMetrics()">Top3Domains</button>
+
   <div class="result" id="result"></div>
+
+  <div class="top3" id="top3">
+    <ul id="top3-ul">
+    </ul>
+  </div>
 
   <script>
     async function shortenUrl() {
@@ -37,7 +57,31 @@
         Shortened URL: <a href="${data.short_url}" target="_blank">${data.short_url}</a>
       `;
     }
+
+    async function GetMetrics() {
+      const response = await fetch("http://localhost:8088/api/v1/metrics", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        document.getElementById("top3").innerHTML = "Error shortening URL";
+        return;
+      }
+
+      document.getElementById("top3-ul").innerHTML = "";
+      const data = await response.json();
+      const domains = data.top3_domains;
+      domains.forEach(element => {
+        const node = document.createElement("l1")
+        const textNode = document.createTextNode(`domain : ${element.domain}, frequency: ${element.freuency}\n`)
+        node.appendChild(textNode)
+        node.appendChild(document.createElement("br"))
+        document.getElementById("top3-ul").appendChild(node)
+      });
+    }
   </script>
 
 </body>
+
 </html>
