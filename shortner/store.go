@@ -4,6 +4,8 @@ import (
 	"context"
 	"sync"
 
+	"maps"
+
 	"github.com/ckshitij/collections/heap"
 )
 
@@ -29,22 +31,30 @@ func NewURLShortnerStore() *URLStore {
 
 func (u *URLStore) Insert(ctx context.Context, data URLShortData) {
 	u.Lock()
-	defer u.Unlock()
 	u.shortnerMap[data.ShortURL] = data.URL
 	u.domainCount[data.Domain]++
+	targetMap := make(map[string]int)
+	maps.Copy(targetMap, u.domainCount)
+	u.Unlock()
 
+	go u.calculateTop3Domain(targetMap)
+}
+
+func (u *URLStore) calculateTop3Domain(targetMap map[string]int) {
 	// create a new fresh heap
 	priorityQueue := heap.NewHeap(func(a, b DomainCount) bool {
 		return a.Count > b.Count
 	})
 
-	for domain, count := range u.domainCount {
+	for domain, count := range targetMap {
 		priorityQueue.Push(DomainCount{Domain: domain, Count: count})
 	}
+
 	temp := []DomainCount{}
 	for i := 0; i < 3 && priorityQueue.Size() > 0; i++ {
 		temp = append(temp, priorityQueue.Pop())
 	}
+
 	u.topDomains[u.activeInd^1] = temp
 	u.activeInd ^= 1
 }
